@@ -6,24 +6,23 @@ describe('Health Check API', () => {
   let app;
   
   beforeAll(() => {
-    // 실제 구현 후 활성화
-    // app = require('../../../src/app');
+    app = require('../../../src/app');
   });
 
   describe('GET /api/health', () => {
     test('서버 상태 확인 API가 정상적으로 응답하는지', async () => {
-      // When: Health check API 호출 (실제 구현 필요)
-      // const response = await request(app)
-      //   .get('/api/health')
-      //   .expect(200);
+      // When: Health check API 호출
+      const response = await request(app)
+        .get('/api/health')
+        .expect(200);
 
-      // Then: 올바른 응답 구조 확인 (실제 구현 필요)
-      // expect(response.body).toMatchObject({
-      //   status: 'ok',
-      //   timestamp: expect.any(String),
-      //   database: expect.any(String), // 'connected' 또는 'disconnected'
-      //   version: expect.any(String)
-      // });
+      // Then: 올바른 응답 구조 확인
+      expect(response.body).toMatchObject({
+        status: 'ok',
+        timestamp: expect.any(String),
+        database: expect.any(String), // 'connected' 또는 'disconnected'
+        version: expect.any(String)
+      });
     });
 
     test('DB 연결 상태가 포함되어 있는지', async () => {
@@ -56,8 +55,7 @@ describe('Admin Console API Routes', () => {
   let app;
   
   beforeAll(() => {
-    // 실제 구현 후 활성화
-    // app = require('../../../src/app');
+    app = require('../../../src/app');
   });
 
   describe('POST /api/sync/run', () => {
@@ -168,8 +166,7 @@ describe('기본 Express 설정', () => {
   let app;
   
   beforeAll(() => {
-    // 실제 구현 후 활성화
-    // app = require('../../../src/app');
+    app = require('../../../src/app');
   });
 
   test('CORS가 올바르게 설정되어 있는지', async () => {
@@ -188,11 +185,11 @@ describe('기본 Express 설정', () => {
   test('Rate limiting이 적용되어 있는지', async () => {
     // Given: 빠른 연속 요청 (실제 구현 필요)
     const requests = Array(100).fill().map(() => 
-      // request(app).get('/api/health')
+      request(app).get('/api/health')
     );
 
     // When: 동시에 많은 요청 실행 (실제 구현 필요)
-    // const responses = await Promise.all(requests);
+    const responses = await Promise.all(requests);
 
     // Then: 일부 요청이 429 상태를 받았는지 확인 (실제 구현 필요)
     // const rateLimitedResponses = responses.filter(r => r.status === 429);

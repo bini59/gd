@@ -6,8 +6,7 @@ describe('EligibilityEngine Service - Story S-2.1', () => {
   let EligibilityEngine;
   
   beforeAll(() => {
-    // 실제 구현 후 활성화
-    // EligibilityEngine = require('../../../src/services/EligibilityEngine');
+    EligibilityEngine = require('../../../src/services/EligibilityEngine');
   });
 
   describe('룰 JSON 구성 및 파싱', () => {
@@ -21,14 +20,14 @@ describe('EligibilityEngine Service - Story S-2.1', () => {
         venus: { minFame: 60000, maxSlots: 1 }
       };
 
-      // When: 룰 파싱 (실제 구현 필요)
-      // const parsedRules = EligibilityEngine.parseContentRules(validRules);
+      // When: 룰 파싱
+      const parsedRules = EligibilityEngine.parseContentRules(validRules);
 
-      // Then: 올바르게 파싱되었는지 확인 (실제 구현 필요)
-      // expect(parsedRules).toBeDefined();
-      // expect(parsedRules.nabeel.minFame).toBe(58000);
-      // expect(parsedRules.nightmare.maxSlots).toBe(4);
-      // expect(Object.keys(parsedRules)).toHaveLength(5);
+      // Then: 올바르게 파싱되었는지 확인
+      expect(parsedRules).toBeDefined();
+      expect(parsedRules.nabeel.minFame).toBe(58000);
+      expect(parsedRules.nightmare.maxSlots).toBe(4);
+      expect(Object.keys(parsedRules)).toHaveLength(5);
     });
 
     test('잘못된 JSON 입력 시 예외가 발생하는지', async () => {
@@ -44,11 +43,11 @@ describe('EligibilityEngine Service - Story S-2.1', () => {
         {}
       ];
 
-      // When & Then: 각각의 잘못된 룰에 대해 예외 발생 확인 (실제 구현 필요)
-      for (const invalidRule of invalidRules) {
-        // await expect(EligibilityEngine.parseContentRules(invalidRule))
-        //   .rejects.toThrow('Invalid content rules');
-      }
+      // When & Then: 각각의 잘못된 룰에 대해 예외 발생 확인
+      invalidRules.forEach(invalidRule => {
+        expect(() => EligibilityEngine.parseContentRules(invalidRule))
+          .toThrow('Invalid content rules');
+      });
     });
   });
 
@@ -62,18 +61,18 @@ describe('EligibilityEngine Service - Story S-2.1', () => {
 
       const contentRules = mockContentRules;
 
-      // When: Eligibility 계산 (실제 구현 필요)
-      // const eligibility = await EligibilityEngine.calculateEligibility(
-      //   highFameCharacter, 
-      //   contentRules
-      // );
+      // When: Eligibility 계산
+      const eligibility = await EligibilityEngine.calculateEligibility(
+        highFameCharacter, 
+        contentRules
+      );
 
-      // Then: 모든 컨텐츠에 입장 가능해야 함 (실제 구현 필요)
-      // expect(eligibility.nabeel).toBe(true);
-      // expect(eligibility.nightmare).toBe(true);
-      // expect(eligibility.goddess).toBe(true);
-      // expect(eligibility.azure).toBe(true);
-      // expect(eligibility.venus).toBe(true);
+      // Then: 모든 컨텐츠에 입장 가능해야 함
+      expect(eligibility.nabeel).toBe(true);
+      expect(eligibility.nightmare).toBe(true);
+      expect(eligibility.goddess).toBe(true);
+      expect(eligibility.azure).toBe(true);
+      expect(eligibility.venus).toBe(true);
     });
 
     test('Fame이 부족할 때 eligibility가 false로 계산되는지', async () => {

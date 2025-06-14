@@ -1,21 +1,34 @@
 // Jest 전역 설정
-require('dotenv').config({ path: '.env.test' });
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.test') });
 
 // 테스트 환경 설정
 process.env.NODE_ENV = 'test';
 process.env.PORT = '3001';
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db';
+process.env.TEST_DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db';
+process.env.NEOPLE_API_KEY = 'test_api_key';
+process.env.NEOPLE_API_BASE_URL = 'https://api.neople.co.kr';
+process.env.JWT_SECRET = 'test_jwt_secret';
 
-// 테스트용 데이터베이스 URL 설정
-if (!process.env.TEST_DATABASE_URL) {
-  process.env.TEST_DATABASE_URL = 'postgresql://postgres:password@localhost:5432/gd_test_db';
-}
+// Mock pg module globally
+jest.mock('pg');
 
 // 전역 테스트 타임아웃 설정
-jest.setTimeout(30000);
+jest.setTimeout(10000);
+
+// Console 출력 제한 (테스트 중 로그 스팸 방지)
+global.console = {
+  ...console,
+  log: jest.fn(),
+  debug: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn()
+};
 
 // 테스트 후 정리 함수
 afterAll(async () => {
-  // DB 연결 정리
-  const pool = require('../src/config/database');
-  await pool.end();
+  // Cleanup any global resources
+  jest.clearAllMocks();
 });

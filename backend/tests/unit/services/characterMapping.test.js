@@ -8,8 +8,7 @@ describe('CharacterMapping Service - Story S-1.2', () => {
   let TestDatabase;
   
   beforeAll(() => {
-    // 실제 구현 후 활성화
-    // CharacterMapping = require('../../../src/services/CharacterMapping');
+    CharacterMapping = require('../../../src/services/CharacterMapping');
     TestDatabase = require('../../helpers/testDb');
   });
 
@@ -30,17 +29,15 @@ describe('CharacterMapping Service - Story S-1.2', () => {
         .query({ apikey: process.env.NEOPLE_API_KEY })
         .reply(200, mockNeopleCharacterDetailResponse);
 
-      // When: 캐릭터 상세 정보 조회 (실제 구현 필요)
-      // const result = await CharacterMapping.getCharacterDetail(characterId);
+      // When: 캐릭터 상세 정보 조회
+      const result = await CharacterMapping.getCharacterDetail(characterId);
 
       // Then: 올바른 데이터가 반환되는지 확인
       expect(apiMock.isDone()).toBe(true);
-      
-      // 실제 구현 후 활성화
-      // expect(result).toBeDefined();
-      // expect(result.characterId).toBe(characterId);
-      // expect(result.characterName).toBe('테스트캐릭1');
-      // expect(result.accountId).toBe('account_001');
+      expect(result).toBeDefined();
+      expect(result.characterId).toBe(characterId);
+      expect(result.characterName).toBe('테스트캐릭1');
+      expect(result.accountId).toBe('account_001');
     });
 
     test('잘못된 characterId로 호출 시 적절한 에러가 반환되는지', async () => {
