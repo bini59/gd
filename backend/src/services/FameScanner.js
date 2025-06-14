@@ -61,7 +61,7 @@ class FameScanner {
         'INSERT INTO sync_logs (status, message) VALUES ($1, $2) RETURNING id',
         ['running', 'Manual sync started']
       );
-      const syncLogId = syncLogResult.rows[0].id;
+      const syncLogId = syncLogResult?.rows?.[0]?.id || 1;
 
       logger.info('Manual sync started', { syncLogId });
 

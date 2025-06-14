@@ -48,7 +48,7 @@ class AccountsController {
         [accountId]
       );
 
-      if (parseInt(accountCheck.rows[0].count) === 0) {
+      if (parseInt(accountCheck?.rows?.[0]?.count || 0) === 0) {
         return res.status(404).json({ error: 'Account not found' });
       }
 
@@ -66,7 +66,7 @@ class AccountsController {
         ORDER BY fame DESC
       `, [accountId]);
 
-      const characters = charactersResult.rows.map(row => ({
+      const characters = (charactersResult?.rows || []).map(row => ({
         characterId: row.char_id,
         characterName: row.character_name,
         fame: row.fame,

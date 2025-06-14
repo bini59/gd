@@ -56,7 +56,7 @@ class SyncController {
 
       // Get total count
       const countResult = await pool.query('SELECT COUNT(*) as total FROM sync_logs');
-      const total = parseInt(countResult.rows[0].total);
+      const total = parseInt(countResult?.rows?.[0]?.total || 0);
 
       // Get logs with pagination
       const logsResult = await pool.query(`
@@ -73,7 +73,7 @@ class SyncController {
         LIMIT $1 OFFSET $2
       `, [limit, offset]);
 
-      const logs = logsResult.rows.map(row => ({
+      const logs = (logsResult?.rows || []).map(row => ({
         id: row.id,
         status: row.status,
         message: row.message,
@@ -122,7 +122,7 @@ class SyncController {
         LIMIT 1
       `);
 
-      const lastSync = lastSyncResult.rows[0] || null;
+      const lastSync = lastSyncResult?.rows?.[0] || null;
 
       // Get sync statistics
       const statsResult = await pool.query(`
@@ -135,7 +135,7 @@ class SyncController {
         WHERE created_at > NOW() - INTERVAL '30 days'
       `);
 
-      const stats = statsResult.rows[0];
+      const stats = statsResult?.rows?.[0] || {};
 
       res.json({
         isRunning,
@@ -186,7 +186,7 @@ class SyncController {
         LIMIT $1 OFFSET $2
       `, [limit, offset]);
 
-      const failLogs = result.rows.map(row => ({
+      const failLogs = (result?.rows || []).map(row => ({
         id: row.id,
         characterId: row.char_id,
         errorMessage: row.error_message,

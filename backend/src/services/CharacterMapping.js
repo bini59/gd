@@ -99,6 +99,10 @@ class CharacterMapping {
   async upsertCharacter(characterData) {
     const client = await pool.connect();
     
+    if (!client) {
+      throw new Error('Failed to get database connection');
+    }
+    
     try {
       await client.query('BEGIN');
 
@@ -137,7 +141,7 @@ class CharacterMapping {
         characterId: characterData.characterId
       });
 
-      return result.rows[0];
+      return result?.rows?.[0] || null;
 
     } catch (error) {
       await client.query('ROLLBACK');
@@ -150,6 +154,10 @@ class CharacterMapping {
 
   async upsertBatch(charactersData) {
     const client = await pool.connect();
+    
+    if (!client) {
+      throw new Error('Failed to get database connection');
+    }
     
     try {
       await client.query('BEGIN');
@@ -194,7 +202,9 @@ class CharacterMapping {
           characterData.job_name
         ]);
 
-        results.push(result.rows[0]);
+        if (result?.rows?.[0]) {
+          results.push(result.rows[0]);
+        }
       }
 
       await client.query('COMMIT');
@@ -218,7 +228,7 @@ class CharacterMapping {
         [accountId, characterId]
       );
 
-      return result.rows[0] || null;
+      return result?.rows?.[0] || null;
     } catch (error) {
       logger.error('Failed to get character:', error);
       throw error;
@@ -228,7 +238,7 @@ class CharacterMapping {
   async getCharacterCount() {
     try {
       const result = await pool.query('SELECT COUNT(*) as count FROM account_char');
-      return parseInt(result.rows[0].count);
+      return parseInt(result?.rows?.[0]?.count || 0);
     } catch (error) {
       logger.error('Failed to get character count:', error);
       throw error;
