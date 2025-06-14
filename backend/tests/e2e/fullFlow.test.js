@@ -6,21 +6,22 @@ const { mockNeopleFameSearchResponse, mockNeopleCharacterDetailResponse } = requ
 
 describe('E2E: 전체 데이터 플로우 테스트', () => {
   let app;
-  let TestDatabase;
+  let testDatabase;
   
   beforeAll(async () => {
     // 실제 구현 후 활성화
-    // app = require('../../src/app');
-    TestDatabase = require('../helpers/testDb');
-    // await TestDatabase.setup();
+    app = require('../../src/app');
+    const TestDatabase = require('../helpers/testDb');
+    testDatabase = new TestDatabase();
+    await testDatabase.setup();
   });
 
   afterAll(async () => {
-    // await TestDatabase.teardown();
+    await testDatabase.teardown();
   });
 
   beforeEach(async () => {
-    // await TestDatabase.cleanup();
+    await testDatabase.cleanup();
     nock.cleanAll();
   });
 
@@ -36,7 +37,7 @@ describe('E2E: 전체 데이터 플로우 테스트', () => {
         .query(true)
         .reply(200, mockNeopleFameSearchResponse);
 
-      const charDetailMocks = mockNeopleFameSearchResponse.data.rows.map(char =>
+      const charDetailMocks = mockNeopleFameSearchResponse.rows.map(char =>
         nock('https://api.neople.co.kr')
           .get(`/df/characters/${char.characterId}`)
           .query(true)
@@ -227,11 +228,11 @@ describe('E2E: 전체 데이터 플로우 테스트', () => {
 
       // When: 동시 요청 10개 (실제 구현 필요)
       const concurrentRequests = Array(10).fill().map(() =>
-        // request(app).get('/api/accounts/account_concurrent/eligibles')
+        request(app).get('/api/accounts/account_concurrent/eligibles')
       );
 
       const startTime = Date.now();
-      // const responses = await Promise.all(concurrentRequests);
+      const responses = await Promise.all(concurrentRequests);
       const endTime = Date.now();
 
       // Then: 모든 요청이 성공하고 합리적인 시간 내 완료 (실제 구현 필요)

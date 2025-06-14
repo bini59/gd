@@ -45,25 +45,23 @@ const mockAccountData = {
 
 // Neople API 응답 Mock
 const mockNeopleFameSearchResponse = {
-  data: {
-    rows: [
-      {
-        characterId: 'char_001',
-        characterName: '테스트캐릭1',
-        jobName: '귀검사(남)',
-        adventureFame: 62000,
-        serverId: 'bakal'
-      },
-      {
-        characterId: 'char_002',
-        characterName: '테스트캐릭2',
-        jobName: '격투가(여)',
-        adventureFame: 54000,
-        serverId: 'bakal'
-      }
-    ],
-    next: null
-  }
+  rows: [
+    {
+      characterId: 'char_001',
+      characterName: '테스트캐릭1',
+      jobName: '귀검사(남)',
+      adventureFame: 62000,
+      serverId: 'bakal'
+    },
+    {
+      characterId: 'char_002',
+      characterName: '테스트캐릭2',
+      jobName: '격투가(여)',
+      adventureFame: 54000,
+      serverId: 'bakal'
+    }
+  ],
+  next: null
 };
 
 const mockNeopleCharacterDetailResponse = {

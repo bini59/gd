@@ -8,8 +8,7 @@ describe('Accounts API - Story S-3.1', () => {
   let TestDatabase;
   
   beforeAll(async () => {
-    // 실제 구현 후 활성화
-    // app = require('../../../src/app');
+    app = require('../../../src/app');
     TestDatabase = require('../../helpers/testDb');
     // await TestDatabase.setup();
   });

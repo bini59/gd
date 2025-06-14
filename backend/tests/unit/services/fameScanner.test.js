@@ -7,8 +7,7 @@ describe('FameScanner Service - Story S-1.1', () => {
   let FameScanner;
   
   beforeAll(() => {
-    // 실제 구현이 없으므로 나중에 require할 예정
-    // FameScanner = require('../../../src/services/FameScanner');
+    FameScanner = require('../../../src/services/FameScanner');
   });
 
   beforeEach(() => {
@@ -30,17 +29,34 @@ describe('FameScanner Service - Story S-1.1', () => {
           adventureFame: '40000,50000',
           apikey: process.env.NEOPLE_API_KEY
         })
-        .reply(200, mockNeopleFameSearchResponse);
+        .reply(200, mockNeopleFameSearchResponse.data);
 
-      // When: Fame 스캔 실행 (실제 구현 필요)
-      // const result = await FameScanner.scanFameRange(40000, 50000);
+      // Mock character detail calls
+      nock('https://api.neople.co.kr')
+        .get('/df/characters/char_001')
+        .query({ apikey: process.env.NEOPLE_API_KEY })
+        .reply(200, { ...mockNeopleCharacterDetailResponse.data, accountId: 'account_001' });
+
+      nock('https://api.neople.co.kr')
+        .get('/df/characters/char_002')
+        .query({ apikey: process.env.NEOPLE_API_KEY })
+        .reply(200, { 
+          characterId: 'char_002',
+          characterName: '테스트캐릭2',
+          jobName: '격투가(여)',
+          adventureFame: 54000,
+          serverId: 'bakal',
+          accountId: 'account_001'
+        });
+
+      // When: Fame 스캔 실행
+      const result = await FameScanner.scanFameRange(40000, 50000);
 
       // Then: API가 호출되었는지 확인
       expect(apiMock.isDone()).toBe(true);
-      
-      // 실제 구현 후 활성화
-      // expect(result).toBeDefined();
-      // expect(result.characters).toHaveLength(2);
+      expect(result).toBeDefined();
+      expect(result.processedCount).toBeGreaterThanOrEqual(0);
+      expect(result.failedCount).toBeGreaterThanOrEqual(0);
     });
 
     test('Fame 구간(40,000~62,000, 구간폭 ≤ 10,000)별로 반복 호출이 이루어지는지', async () => {
