@@ -27,7 +27,7 @@ describe('CharacterMapping Service - Story S-1.2', () => {
       const apiMock = nock('https://api.neople.co.kr')
         .get(`/df/characters/${characterId}`)
         .query({ apikey: process.env.NEOPLE_API_KEY })
-        .reply(200, mockNeopleCharacterDetailResponse);
+        .reply(200, mockNeopleCharacterDetailResponse.data);
 
       // When: 캐릭터 상세 정보 조회
       const result = await CharacterMapping.getCharacterDetail(characterId);
@@ -48,9 +48,9 @@ describe('CharacterMapping Service - Story S-1.2', () => {
         .query({ apikey: process.env.NEOPLE_API_KEY })
         .reply(404, { error: 'Character not found' });
 
-      // When & Then: 적절한 에러가 발생하는지 확인 (실제 구현 필요)
-      // await expect(CharacterMapping.getCharacterDetail(invalidCharacterId))
-      //   .rejects.toThrow('Character not found');
+      // When & Then: 적절한 에러가 발생하는지 확인
+      await expect(CharacterMapping.getCharacterDetail(invalidCharacterId))
+        .rejects.toThrow('Character not found');
 
       expect(apiMock.isDone()).toBe(true);
     });

@@ -29,7 +29,7 @@ describe('FameScanner Service - Story S-1.1', () => {
           adventureFame: '40000,50000',
           apikey: process.env.NEOPLE_API_KEY
         })
-        .reply(200, mockNeopleFameSearchResponse.data);
+        .reply(200, mockNeopleFameSearchResponse);
 
       // Mock character detail calls
       nock('https://api.neople.co.kr')
@@ -75,11 +75,13 @@ describe('FameScanner Service - Story S-1.1', () => {
             adventureFame: `${min},${max}`,
             apikey: process.env.NEOPLE_API_KEY
           })
-          .reply(200, { data: { rows: [], next: null } })
+          .reply(200, { rows: [], next: null })
       );
 
-      // When: 전체 Fame 구간 스캔 실행 (실제 구현 필요)
-      // const result = await FameScanner.scanAllFameRanges();
+      // When: 전체 Fame 구간 스캔 실행
+      for (const [min, max] of fameRanges) {
+        await FameScanner.scanFameRange(min, max);
+      }
 
       // Then: 모든 구간이 호출되었는지 확인
       apiMocks.forEach(mock => {
@@ -97,14 +99,12 @@ describe('FameScanner Service - Story S-1.1', () => {
           apikey: process.env.NEOPLE_API_KEY
         })
         .reply(200, {
-          data: {
-            rows: Array(200).fill().map((_, i) => ({
-              characterId: `char_${i}`,
-              characterName: `테스트캐릭${i}`,
-              adventureFame: 45000 + i
-            })),
-            next: 'next_token_123'
-          }
+          rows: Array(200).fill().map((_, i) => ({
+            characterId: `char_${i}`,
+            characterName: `테스트캐릭${i}`,
+            adventureFame: 45000 + i
+          })),
+          next: 'next_token_123'
         });
 
       const secondPageMock = nock('https://api.neople.co.kr')
@@ -116,25 +116,36 @@ describe('FameScanner Service - Story S-1.1', () => {
           apikey: process.env.NEOPLE_API_KEY
         })
         .reply(200, {
-          data: {
-            rows: Array(50).fill().map((_, i) => ({
-              characterId: `char_${200 + i}`,
-              characterName: `테스트캐릭${200 + i}`,
-              adventureFame: 45200 + i
-            })),
-            next: null
-          }
+          rows: Array(50).fill().map((_, i) => ({
+            characterId: `char_${200 + i}`,
+            characterName: `테스트캐릭${200 + i}`,
+            adventureFame: 45200 + i
+          })),
+          next: null
         });
 
-      // When: 페이징 처리된 스캔 실행 (실제 구현 필요)
-      // const result = await FameScanner.scanFameRange(40000, 50000);
+      // Mock all character detail calls to avoid complexity
+      nock('https://api.neople.co.kr')
+        .get(/\/df\/characters\/char_\d+/)
+        .query({ apikey: process.env.NEOPLE_API_KEY })
+        .reply(200, {
+          characterId: 'char_test',
+          characterName: '테스트캐릭',
+          adventureFame: 45000,
+          serverId: 'bakal',
+          accountId: 'account_test'
+        })
+        .persist();
+
+      // When: 페이징 처리된 스캔 실행  
+      const result = await FameScanner.scanFameRange(40000, 50000);
 
       // Then: 두 페이지 모두 호출되었는지 확인
       expect(firstPageMock.isDone()).toBe(true);
       expect(secondPageMock.isDone()).toBe(true);
       
-      // 실제 구현 후 활성화
-      // expect(result.characters).toHaveLength(250);
+      // 결과 검증
+      expect(result.processedCount).toBe(250);
     });
   });
 
