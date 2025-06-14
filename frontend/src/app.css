@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tier-legend: #FFD700;
+  --tier-epic: #C957FF;
+  --tier-rare: #00BFFF;
+  --tier-unranked: #B0BEC5;
+}

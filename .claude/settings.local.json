@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx sv:*)",
+      "Bash(npx create-svelte:*)",
+      "Bash(mkdir:*)",
+      "Bash(yarn install)",
+      "Bash(yarn dev:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": []
+  }
+}
