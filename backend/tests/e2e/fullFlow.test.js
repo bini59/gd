@@ -51,14 +51,14 @@ describe('E2E: 전체 데이터 플로우 테스트', () => {
 
       const adminToken = 'valid_admin_token';
 
-      // When: 1단계 - 수동 Sync 실행 (실제 구현 필요)
-      // const syncResponse = await request(app)
-      //   .post('/api/sync/run')
-      //   .set('Authorization', `Bearer ${adminToken}`)
-      //   .expect(200);
+      // When: 1단계 - 수동 Sync 실행
+      const syncResponse = await request(app)
+        .post('/api/sync/run')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
 
-      // Then: Sync가 성공했는지 확인 (실제 구현 필요)
-      // expect(syncResponse.body.success).toBe(true);
+      // Then: Sync가 성공했는지 확인
+      expect(syncResponse.body.success).toBe(true);
       expect(fameSearchMock.isDone()).toBe(true);
       charDetailMocks.forEach(mock => expect(mock.isDone()).toBe(true));
 
